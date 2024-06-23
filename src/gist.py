@@ -91,7 +91,7 @@ class Gist:
     @staticmethod
     def gist(
         content: str, options: Optional[Dict[str, Any]] = None
-    ) -> Union[Dict[str, Any], str]:
+    ) -> Optional[Union[Dict[str, Any], str]]:
         """Create a new gist with the given content and options."""
         options = options or {}
         filename = options.get("filename", Gist.default_filename())
@@ -100,7 +100,7 @@ class Gist:
     @staticmethod
     def multi_gist(
         files: Dict[str, str], options: Optional[Dict[str, Any]] = None
-    ) -> Union[Dict[str, Any], str]:
+    ) -> Optional[Union[Dict[str, Any], str]]:
         """Create a new gist with multiple files."""
         options = options or {}
         if options.get("anonymous"):
@@ -134,6 +134,7 @@ class Gist:
             return Gist.on_success(response.json(), options)
         else:
             response.raise_for_status()
+        return None
 
     @staticmethod
     def on_success(
@@ -272,6 +273,7 @@ class Gist:
             return file_data.get("content")
         else:
             response.raise_for_status()
+        return None
 
     @staticmethod
     def delete_gist(gist_id: str) -> None:
