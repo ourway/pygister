@@ -20,3 +20,5 @@ isort
 jedi
 pynvim
 
+# publish
+twine
