@@ -1,145 +1,140 @@
-# Gist Python Tool
+# Pygister
 
-This Python tool allows you to interact with GitHub Gists. You can create, read, list, and delete gists using this tool.
+A Python tool to interact with GitHub Gists. This tool allows you to create, read, update, and sync Gists directly from the command line.
 
-## Prerequisites
+## Features
 
-- Python 3.12
-- GitHub personal access token
+- Create a new Gist from a local file.
+- Read the content of a Gist by its ID.
+- Update an existing Gist with the content of a local file.
+- Synchronize a local file with a remote Gist, keeping them in sync at regular intervals.
+- Print the version of the `pygister` library.
 
 ## Installation
 
-### 1. Clone the Repository
+### Using pip
+
+You can install `pygister` directly from the source:
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
+pip install -e .
 ```
 
-### 2. Create and Activate a Virtual Environment
+### Using setup.py
+
+To install using the `setup.py` script:
 
 ```bash
-python3.12 -m venv .venv
-source .venv/bin/activate  # On Windows use `.venv\Scripts\activate`
-```
-
-### 3. Install Dependencies
-
-Install the required dependencies using `pip` and the `requirements.txt` file:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Configuration
-
-### Set Up Authentication
-
-You need to create a GitHub personal access token and save it in a file named `~/.gist`. This token will be used to authenticate your requests to the GitHub API.
-
-1. Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens).
-2. Generate a new token with the `gist` scope.
-3. Save the token in a file named `~/.gist` in your home directory:
-
-```bash
-echo "your_personal_access_token" > ~/.gist
+python setup.py install
 ```
 
 ## Usage
 
-### 1. Creating a Gist
+### Command Line Interface
 
-You can create a gist with the following sample code:
+#### Print the version
 
-```python
-from src.gist import Gist
+To print the version of the `pygister` library:
 
-# Sample content for creating a gist
-content = "print('Hello, World!')"
-options = {
-    'description': 'A hello world program',
-    'public': True,
-    'filename': 'hello.py'
-}
-
-result = Gist.gist(content, options)
-print("Gist created:", result)
+```bash
+pygist version
 ```
 
-### 2. Listing All Gists
+#### Create a Gist
 
-List all gists for the authenticated user:
+To create a new Gist from a local file and return the short URL of the new Gist:
 
-```python
-from src.gist import Gist
-
-gists = Gist.list_all_gists()
-print("Listing all gists:", gists)
+```bash
+pygist push <filename>
 ```
 
-### 3. Reading a Gist
+#### Read a Gist
 
-Read the content of a specific gist by its ID:
+To read the content of a Gist by its ID and print it to stdout:
 
-```python
-from src.gist import Gist
-
-gist_id = 'your_gist_id_here'
-content = Gist.read_gist(gist_id)
-print("Gist content:", content)
+```bash
+pygist read <ID>
 ```
 
-### 4. Deleting a Gist
+#### Update a Gist
 
-Delete a specific gist by its ID:
+To update an existing Gist with the content of a local file:
 
-```python
-from src.gist import Gist
-
-gist_id = 'your_gist_id_here'
-Gist.delete_gist(gist_id)
-print("Gist deleted successfully.")
+```bash
+pygist push <filename> <ID>
 ```
 
-## Running Tests
+#### Sync a Local File with a Gist
 
-To run the tests, ensure you have `pytest` installed and configured. You can run the tests using the following command:
+To synchronize a local file with a remote Gist every specified number of seconds:
+
+```bash
+pygist sync <ID> <Seconds>
+```
+
+- If the local file does not exist, it will be created.
+- If the local file is newer, it will update the Gist.
+- If the Gist is newer, it will update the local file.
+- The process will run in a loop every `<Seconds>` and will gracefully shut down on receiving `CTRL-C`.
+
+### Example Usage
+
+1. **Create a Gist:**
+
+   ```bash
+   pygist push example.txt
+   ```
+
+2. **Read a Gist:**
+
+   ```bash
+   pygist read 1234567890abcdef1234567890abcdef
+   ```
+
+3. **Update a Gist:**
+
+   ```bash
+   pygist push example.txt 1234567890abcdef1234567890abcdef
+   ```
+
+4. **Sync a Local File with a Gist:**
+
+   ```bash
+   pygist sync 1234567890abcdef1234567890abcdef 60
+   ```
+
+   This command will sync the local file associated with the Gist ID every 60 seconds.
+
+## Development
+
+### Running Tests
+
+To run tests:
 
 ```bash
 pytest
 ```
 
-Make sure your `PYTHONPATH` includes the `src` directory. You can set it in your `pyproject.toml` file:
+### Linting and Formatting
 
-```toml
-[tool.pytest.ini_options.env]
-PYTHONPATH = "src"
+To lint and format the code:
+
+```bash
+make lint
 ```
 
-## Project Structure
+### Type Checking
 
+To perform type checking:
+
+```bash
+make type-check
 ```
-your_project/
-│
-├── src/
-│   └── gist.py
-│
-├── tests/
-│   └── test_gist.py
-│
-├── requirements.txt
-├── pyproject.toml
-└── README.md
-```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
-
-## Author
-
-Farshid Ashouri
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Author
+
+Farshid Ashouri - farsheed.ashouri@gmail.com

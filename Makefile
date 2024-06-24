@@ -23,6 +23,7 @@ $(VENV):
 install: $(VENV)
 	$(PIP) install -r requirements.txt
 	$(PIP) install -r requirements-dev.txt
+	$(PIP) install -e .
 
 # Linting with isort
 lint-isort:

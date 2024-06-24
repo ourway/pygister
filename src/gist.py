@@ -11,8 +11,9 @@ load_dotenv()
 
 
 class Gist:
-    VERSION = "6.0.0"
-
+    # read from VERSION file
+    with open("VERSION") as f:
+        VERSION = f.read().strip()
     # A list of clipboard commands with copy and paste support.
     CLIPBOARD_COMMANDS = {
         "pbcopy": "pbpaste",
@@ -32,7 +33,7 @@ class Gist:
 
     URL_ENV_NAME = "GITHUB_URL"
     CLIENT_ID_ENV_NAME = "GIST_CLIENT_ID"
-    TOKEN_ENV_NAME = "TEST_TOKEN"
+    TOKEN_ENV_NAME = "GITHUB_TOKEN"
 
     USER_AGENT = f"gist/{VERSION} (requests, {os.uname()})"
 
@@ -134,12 +135,13 @@ class Gist:
             return Gist.on_success(response.json(), options)
         else:
             response.raise_for_status()
+
         return None
 
     @staticmethod
     def on_success(
         response_json: Dict[str, Any], options: Dict[str, Any]
-    ) -> Union[Dict[str, Any], str]:
+    ) -> Optional[Union[Dict[str, Any], str]]:
         """Handle the success response from creating a gist."""
         output_type = options.get("output", "all")
         output = {
@@ -273,6 +275,7 @@ class Gist:
             return file_data.get("content")
         else:
             response.raise_for_status()
+
         return None
 
     @staticmethod
@@ -285,5 +288,19 @@ class Gist:
 
         if response.status_code == 204:
             print("Gist deleted successfully.")
+        else:
+            response.raise_for_status()
+
+    @staticmethod
+    def update_gist(gist_id: str, content: str) -> None:
+        """Update a specific gist by its ID."""
+        url = urljoin(Gist.api_url(), f"/gists/{gist_id}")
+        access_token = Gist.auth_token()
+        headers = {"Authorization": f"token {access_token}"} if access_token else {}
+        json_data = {"files": {Gist.default_filename(): {"content": content}}}
+        response = requests.patch(url, headers=headers, json=json_data)
+
+        if response.status_code == 200:
+            print("Gist updated successfully.")
         else:
             response.raise_for_status()

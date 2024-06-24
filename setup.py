@@ -1,8 +1,13 @@
 from setuptools import find_packages, setup
 
+# read version from VERSION file
+
+with open("VERSION", "r") as version_file:
+    version = version_file.read().strip()
+
 setup(
     name="pygister",
-    version="0.1.1",
+    version=version,
     description="A Python tool to interact with GitHub Gists",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -14,6 +19,8 @@ setup(
     include_package_data=True,
     install_requires=[
         "requests",
+        "click",
+        "python-dotenv",
     ],
     extras_require={
         "dev": [
@@ -21,7 +28,14 @@ setup(
             "isort",
             "black",
             "mypy",
-            "python-dotenv",
+        ],
+    },
+    package_data={
+        "": ["py.typed"],
+    },
+    entry_points={
+        "console_scripts": [
+            "pygist=pygister:cli",
         ],
     },
     classifiers=[
