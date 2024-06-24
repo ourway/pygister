@@ -2,6 +2,6 @@ include README.md
 include LICENSE
 include requirements.txt
 include requirements-dev.txt
-include src/py.typed
-recursive-include src *.py
-recursive-include tests *.py
+include py.typed
+recursive-include src/ *.py
+recursive-include tests/ *.py

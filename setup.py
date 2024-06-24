@@ -1,9 +1,10 @@
 from setuptools import find_packages, setup
 
-# read version from VERSION file
+# read from VERSION file
 
 with open("VERSION", "r") as version_file:
     version = version_file.read().strip()
+
 
 setup(
     name="pygister",
@@ -14,7 +15,7 @@ setup(
     author="Farshid Ashouri",
     author_email="farsheed.ashouri@gmail.com",
     url="https://github.com/ourway/pygister",
-    packages=find_packages(where="src"),
+    packages=find_packages(where="src/"),
     package_dir={"": "src"},
     include_package_data=True,
     install_requires=[
@@ -29,9 +30,6 @@ setup(
             "black",
             "mypy",
         ],
-    },
-    package_data={
-        "": ["py.typed"],
     },
     entry_points={
         "console_scripts": [
